@@ -28,9 +28,9 @@ MODO_TECNICO = "Detalle técnico: cómo se probó el modelo"
 # Colores de los gráficos
 COLOR_BARRAS = "#4c78a8"        # barras normales
 COLOR_APAGADO = "#c9d3df"       # barras que no se eligieron (cuando hay una resaltada)
-COLOR_RESALTADO = "#e4572e"     # barra de la provincia elegida
-COLOR_REAL = "#4c566a"          # línea de lo real
-COLOR_MODELO = "#e4572e"        # línea del modelo
+COLOR_RESALTADO = "#1f4e8c"     # barra de la provincia elegida (azul oscuro)
+COLOR_REAL = "#333333"          # línea de lo real
+COLOR_MODELO = "#3b82d6"        # línea del modelo (azul)
 
 
 def volver_a_focos(valor_log):
@@ -85,7 +85,7 @@ def grafico_puntos():
     tope = max(tabla["Real"].max(), tabla["Estimado"].max()) * 1.1
     escala = alt.Scale(type="symlog", constant=1, domain=[0, tope])       # escala logarítmica que admite el 0
     marcas = [v for v in [0, 10, 100, 1000, 10000, 100000] if v <= tope]
-    puntos = alt.Chart(tabla).mark_circle(size=55, opacity=0.55, color=COLOR_RESALTADO).encode(
+    puntos = alt.Chart(tabla).mark_circle(size=55, opacity=0.55, color=COLOR_BARRAS).encode(
         x=alt.X("Real", scale=escala, axis=alt.Axis(values=marcas), title="Focos reales (escala logarítmica)"),
         y=alt.Y("Estimado", scale=escala, axis=alt.Axis(values=marcas), title="Focos estimados por el modelo"),
         tooltip=["Provincia", "Año", "Mes", alt.Tooltip("Real", format=",.0f"), alt.Tooltip("Estimado", format=",.2f")],
@@ -190,8 +190,8 @@ if modo == MODO_PRONOSTICO:
     col2.metric("Focos en diciembre de 2025", f"{mes_anterior:,.0f}")
     col3.metric("Promedio histórico de enero", f"{historico:,.0f}")
     st.caption(
-        "Es una estimación hecha con los focos y el clima de diciembre de 2025, el último mes con datos. "
-        "Todavía no hay un valor real para comparar."
+        "Es una estimación hecha con los focos y el clima de diciembre de 2025, el último mes con datos completos. "
+        "El año 2026 quedó afuera del proyecto porque no tiene datos de clima, así que no se compara con lo que pasó en enero de 2026."
     )
 
     # Ranking de provincias: lo que necesita una brigada para priorizar (se resalta la provincia elegida)
@@ -201,7 +201,7 @@ if modo == MODO_PRONOSTICO:
     if resaltada is None:
         st.caption("Focos estimados por el modelo en cada provincia, de mayor a menor.")
     else:
-        st.caption(f"Focos estimados por el modelo en cada provincia, de mayor a menor. En naranja, {resaltada}.")
+        st.caption(f"Focos estimados por el modelo en cada provincia, de mayor a menor. En azul oscuro, {resaltada}.")
 
     # ¿Se puede confiar en el pronóstico? Se probó con 2024 y 2025, años que el modelo no usó para aprender
     st.subheader("¿Podemos confiar en este pronóstico?")
